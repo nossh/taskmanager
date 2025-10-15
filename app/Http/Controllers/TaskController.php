@@ -36,8 +36,15 @@ class TaskController extends Controller
 
     public function update(Request $request, Task $task)
     {
-        $task->update($request->validate(['name' => 'required']));
-        return back();
+         $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'project_id' => 'nullable|exists:projects,id'
+        ]);
+
+        $task->update($validated);
+
+        // If you'd like to redirect back with a flash message:
+        return back()->with('success', 'Task updated.');
     }
 
     public function destroy(Task $task)
